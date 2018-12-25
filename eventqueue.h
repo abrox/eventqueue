@@ -29,15 +29,25 @@ SOFTWARE.
 #include <SimplyAtomic.h>
 #else
 #define ATOMIC(x)
+#warning "Not thread safe in host env!"
 #endif
 
+///Array based thread safe queue for Arduino.
+/// Implement FIFO type queue that use array as ringbuffer
+/// to store messages.
+///
 template <class T,uint8_t s=8>
 class EventQueue{
 
 public:
     EventQueue():_in(0),_out(0),_count(0),_s(s){;}
-
-    bool getQ(T &e){
+    ///Pop first item from queue.
+    /// \return status of the operation.
+    /// \retval true when successfully pop item from queue.
+    /// \retval false in case empty queue.
+    ///
+    bool getQ(T &e ///< Item to be pop out from queue.
+              ){
         bool rc=false;
         ATOMIC() {
             if( _count > 0){
@@ -48,9 +58,16 @@ public:
             }
         }
         return rc;
+
     }
 
-    bool putQ(const T &e){
+    /// Insert item to queue.
+    /// \return Status of the operation.
+    /// \retval true in case sucess.
+    /// \retval false in case queue is full and item can not be added.
+    ///
+    bool putQ(const T &e ///< Reference item to be put in queue.
+              ){
         bool rc=false;
         ATOMIC(){
             if( _count <_s){
