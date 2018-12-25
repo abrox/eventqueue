@@ -81,9 +81,9 @@ public:
     }
 
 private:
-    volatile uint8_t _in;
-    volatile uint8_t _out;
-    volatile uint8_t _count;
+    uint8_t _in;
+    uint8_t _out;
+    uint8_t _count;
     const    uint8_t _s;
     T       _queue[s];
 };
